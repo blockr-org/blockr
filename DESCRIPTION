@@ -43,6 +43,7 @@ Remotes:
     DivadNojnarg/DiagrammeR
 Suggests: 
     knitr,
+    jsonlite,
     rmarkdown,
     DiagrammeR,
     testthat (>= 3.0.0),
