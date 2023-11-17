@@ -41,7 +41,11 @@ as_list <- function(x, ...) UseMethod("as_list")
 #' @method as_list field
 #' @export
 as_list.field <- function(x, ...) {
+  type <- attr(x, "type")
+  cls <- class(x)
   class(x) <- "list"
+  x$type <- type
+  x$class <- cls
   x
 }
 
@@ -49,8 +53,12 @@ as_list.field <- function(x, ...) {
 #' @method as_list block
 #' @export
 as_list.block <- function(x, ...) {
+  name <- attr(x, "name")
+  cls <- class(x)
   x <- lapply(x, as_list)
   class(x) <- "list"
+  x$name <- name
+  x$class <- cls
   x
 }
 
