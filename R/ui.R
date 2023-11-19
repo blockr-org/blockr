@@ -76,7 +76,7 @@ generate_ui.block <- function(x, id, ..., .hidden = TRUE) {
 generate_ui.stack <- function(x, id = NULL, ...) {
   stopifnot(...length() == 0L)
 
-  id <- if (is.null(id)) attr(x, "name") else id
+  id <- if (is.null(id)) x$name else id
   body_id <- sprintf("%s-body", id)
 
   ns <- NS(id)
@@ -114,7 +114,7 @@ generate_ui.stack <- function(x, id = NULL, ...) {
       shiny::div(
         class = "card-body p-1",
         id = body_id,
-        lapply(x, \(b) {
+        lapply(x$blocks, \(b) {
           generate_ui(b, id = ns(attr(b, "name")))
         })
       )
@@ -199,7 +199,7 @@ block_title <- function(block, code_id, output_id, ns, .hidden) {
 
 #' @importFrom shiny icon tags div
 stack_header <- function(stack, ns) {
-  title <- attr(stack, "name")
+  title <- stack$name
 
   div(
     class = "card-header",

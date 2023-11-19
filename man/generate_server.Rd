@@ -3,7 +3,6 @@
 \name{generate_server}
 \alias{generate_server}
 \alias{generate_server.block}
-\alias{generate_server.data_block}
 \alias{generate_server.transform_block}
 \alias{generate_server.plot_block}
 \alias{generate_server.ggiraph_block}
@@ -13,8 +12,6 @@
 generate_server(x, ...)
 
 \method{generate_server}{block}(x, ...)
-
-\method{generate_server}{data_block}(x, id, ...)
 
 \method{generate_server}{transform_block}(x, in_dat, id, ...)
 
@@ -29,9 +26,9 @@ generate_server(x, ...)
 
 \item{...}{Generic consistency}
 
-\item{id}{Unique module id. Useful when the stack is called as a module.}
-
 \item{in_dat}{Reactive input data}
+
+\item{id}{Unique module id. Useful when the stack is called as a module.}
 
 \item{new_blocks}{For dynamically inserted blocks.}
 }

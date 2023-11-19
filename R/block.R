@@ -67,128 +67,30 @@ initialize_block <- function(x, ...) {
 }
 
 #' @rdname new_block
-#' @export
-generate_code <- function(x) {
-  UseMethod("generate_code")
-}
-
-#' @rdname new_block
-#' @export
-generate_code.block <- function(x) {
-  if (class(x)[[1]] %in% c("arrange_block", "group_by_block")) {
-    where_tmp <- lapply(x, function(b) {
-      res <- value(b)
-      lapply(res, as.name)
-    })
-    splice <- TRUE
-  } else {
-    where_tmp <- lapply(x, type_trans)
-    splice <- FALSE
-  }
-
-  do.call(
-    bquote,
-    list(
-      attr(x, "expr"),
-      where = where_tmp,
-      splice = splice
-    )
-  )
-}
-
-#' @rdname new_block
-#' @export
-generate_code.transform_block <- function(x) {
-  if (!is_initialized(x)) {
-    return(quote(identity()))
-  }
-
-  NextMethod()
-}
-
-#' @rdname new_block
-#' @export
-evaluate_block <- function(x, ...) {
-  UseMethod("evaluate_block")
-}
-
-#' @rdname new_block
-#' @export
-evaluate_block.data_block <- function(x, ...) {
-  stopifnot(...length() == 0L)
-  eval(generate_code(x), new.env())
-}
-
-#' @param data Result from previous block
-#' @rdname new_block
-#' @export
-evaluate_block.transform_block <- function(x, data, ...) {
-  stopifnot(...length() == 0L)
-  eval(
-    substitute(data %>% expr, list(expr = generate_code(x))),
-    list(data = data)
-  )
-}
-
-#' @param data Result from previous block
-#' @rdname new_block
-#' @export
-evaluate_block.plot_block <- function(x, data, ...) {
-  stopifnot(...length() == 0L)
-  eval(generate_code(x), list(data = data))
-}
-
-#' @param data Result from previous block
-#' @rdname new_block
-#' @export
-evaluate_block.ggiraph_block <- evaluate_block.plot_block
-
-#' @rdname new_block
 #' @param dat Multiple datasets.
 #' @param selected Selected dataset.
 #' @export
-new_data_block <- function(
+block_data <- function(
     ...,
-    dat = as.environment("package:blockr.data"),
-    selected = character()) {
-  is_dataset_eligible <- function(x) {
-    inherits(
-      get(x, envir = dat, inherits = FALSE),
-      "data.frame"
-    )
-  }
-
-  datasets <- ls(envir = dat)
-  datasets <- datasets[lgl_ply(datasets, is_dataset_eligible)]
-
+    datasets = c("iris", "mtcars", "cars"),
+    selected = NULL) {
   if (length(selected) == 0) selected <- datasets[1]
 
   fields <- list(
     dataset = new_select_field(selected, datasets)
   )
 
-  expr <- substitute(
-    get(.(dataset), envir = data),
-    list(data = dat)
+  expr <- quote(
+    get(dataset)
   )
 
+  # we don't "initialise" the block
   new_block(
     fields = fields,
     expr = expr,
     ...,
-    class = c("dataset_block", "data_block")
+    class = c("data_block")
   )
-}
-
-#' @param data Result from previous block
-#' @rdname new_block
-#' @export
-evaluate_block.plot_block <- evaluate_block.ggiraph_block
-
-#' @rdname new_block
-#' @export
-data_block <- function(...) {
-  initialize_block(new_data_block(...))
 }
 
 #' @rdname new_block
@@ -325,7 +227,7 @@ new_select_block <- function(data, columns = colnames(data)[1], ...) {
   new_block(
     fields = fields,
     expr = quote(
-      dplyr::select(.(columns))
+      dplyr::select(columns)
     ),
     ...,
     class = c("select_block", "transform_block")

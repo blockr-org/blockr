@@ -7,27 +7,22 @@
 #' @param name Stack name
 #'
 #' @export
-new_stack <- function(..., name = rand_names()) {
-  ctors <- c(...)
-  names <- names(ctors)
-
-  blocks <- vector("list", length(ctors))
-
-  blocks[[1L]] <- do.call(ctors[[1L]], list())
-  temp <- evaluate_block(blocks[[1L]])
-
-  for (i in seq_along(ctors)[-1L]) {
-    temp <- evaluate_block(
-      blocks[[i]] <- do.call(ctors[[i]], list(temp)),
-      data = temp
-    )
-  }
-
-  stopifnot(
-    is.list(blocks), length(blocks) >= 1L, all(lgl_ply(blocks, is_block))
+new_stack <- \(..., name = rand_names()) {
+  # we construct a list rather than pass block list
+  # with additional parameters as attributes
+  # attributes will make serialisation more complicated
+  stack <- list(
+    name = name,
+    blocks = list(...)
   )
 
-  structure(blocks, name = name, class = "stack")
+  # we inherit from `list`
+  # this will avoid breaking many other operations
+  # one may want to do on a stack in the future
+  # e.g.: current implementations breaks
+  # jsonlite::toJSON(new_stack(data_block)) # nolint
+  # because toJSON has no method on `stack`
+  structure(stack, class = c("stack", class(stack)))
 }
 
 #' Add block to a stack

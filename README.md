@@ -215,3 +215,9 @@ server <- function(input, output, session) {
 
 shinyApp(ui, server)
 ```
+
+### Changes
+
+- `server_output` and `server_code` no longer take `output` argument
+- `stack` includes name in `list` (for future serialisation)
+- blocks are no longer "initialised"
