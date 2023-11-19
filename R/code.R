@@ -9,7 +9,7 @@ server_code <- function(x, env) {
 #' @export
 server_code.block <- function(x, env) {
   shiny::renderPrint({
-    generate_code(x, env)
+    generate_code(x, env())
   })
 }
 

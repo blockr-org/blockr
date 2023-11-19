@@ -39,7 +39,7 @@ generate_server.block <- function(x, ...) {
       })
 
       output$res <- server_output(x, out_dataset)
-      output$code <- server_code(x, env())
+      output$code <- server_code(x, env)
 
       output$nrow <- renderText({
         prettyNum(nrow(out_dataset()), big.mark = ",")
