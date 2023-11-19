@@ -49,31 +49,13 @@ is_block <- function(x) {
 }
 
 #' @rdname new_block
-#' @export
-is_initialized <- function(x) {
-  UseMethod("is_initialized")
-}
-
-#' @rdname new_block
-#' @export
-is_initialized.block <- function(x) {
-  all(lgl_ply(x, is_initialized))
-}
-
-#' @rdname new_block
-#' @export
-initialize_block <- function(x, ...) {
-  UseMethod("initialize_block")
-}
-
-#' @rdname new_block
 #' @param dat Multiple datasets.
 #' @param selected Selected dataset.
 #' @export
 block_data <- function(
     ...,
     datasets = c("iris", "mtcars", "cars"),
-    selected = NULL) {
+    selected = datasets[1]) {
   if (length(selected) == 0) selected <- datasets[1]
 
   fields <- list(
@@ -91,19 +73,6 @@ block_data <- function(
     ...,
     class = c("data_block")
   )
-}
-
-#' @rdname new_block
-#' @export
-initialize_block.data_block <- function(x, ...) {
-  env <- list()
-
-  for (field in names(x)) {
-    x[[field]] <- initialize_field(x[[field]], env)
-    env <- c(env, set_names(list(value(x[[field]])), field))
-  }
-
-  x
 }
 
 #' @param data Tabular data to filter (rows)
@@ -206,17 +175,11 @@ new_filter_block <- function(
   )
 }
 
-#' @rdname new_block
-#' @export
-filter_block <- function(data, ...) {
-  initialize_block(new_filter_block(data, ...), data)
-}
-
 #' @param data Tabular data in which to select some columns.
 #' @param columns Column(s) to select.
 #' @rdname new_block
 #' @export
-new_select_block <- function(data, columns = colnames(data)[1], ...) {
+block_select <- function(data = data.frame(), columns = colnames(data)[1], ...) {
   all_cols <- function(data) colnames(data)
 
   # Select_field only allow one value, not multi select
@@ -227,7 +190,7 @@ new_select_block <- function(data, columns = colnames(data)[1], ...) {
   new_block(
     fields = fields,
     expr = quote(
-      dplyr::select(columns)
+      data |> dplyr::select(columns)
     ),
     ...,
     class = c("select_block", "transform_block")
@@ -354,18 +317,6 @@ new_summarize_block <- function(
 
 #' @rdname new_block
 #' @export
-summarize_block <- function(data, ...) {
-  initialize_block(new_summarize_block(data, ...), data)
-}
-
-#' @rdname new_block
-#' @export
-select_block <- function(data, ...) {
-  initialize_block(new_select_block(data, ...), data)
-}
-
-#' @rdname new_block
-#' @export
 arrange_block <- function(data, ...) {
   # Arrange is close to select so we can use its init functuib
   convert_block(to = arrange, data = data, ...)
@@ -462,12 +413,6 @@ new_join_block <- function(
 }
 
 #' @rdname new_block
-#' @export
-join_block <- function(data, ...) {
-  initialize_block(new_join_block(data, ...), data)
-}
-
-#' @rdname new_block
 #' @param n_rows Number of rows to return.
 #' @param n_rows_min Minimum number of rows.
 #' @export
@@ -494,12 +439,6 @@ new_head_block <- function(
     ...,
     class = c("head_block", "transform_block")
   )
-}
-
-#' @rdname new_block
-#' @export
-head_block <- function(data, ...) {
-  initialize_block(new_head_block(data, ...), data)
 }
 
 #' @param data Tabular data in which to select some columns.
@@ -623,12 +562,6 @@ new_plot_block <- function(
     class = c("plot_block"),
     layout = plot_layout_fields
   )
-}
-
-#' @rdname new_block
-#' @export
-plot_block <- function(data, ...) {
-  initialize_block(new_plot_block(data, ...), data)
 }
 
 #' @param data Tabular data in which to select some columns.
@@ -779,34 +712,6 @@ new_ggiraph_block <- function(
     layout = ggiraph_layout_fields
   )
 }
-
-#' @rdname new_block
-#' @export
-ggiraph_block <- function(data, ...) {
-  initialize_block(new_ggiraph_block(data, ...), data)
-}
-
-
-#' @rdname new_block
-#' @export
-initialize_block.transform_block <- function(x, data, ...) {
-  env <- list(data = data)
-
-  for (field in names(x)) {
-    x[[field]] <- initialize_field(x[[field]], env)
-    env <- c(env, set_names(list(value(x[[field]])), field))
-  }
-
-  x
-}
-
-#' @rdname new_block
-#' @export
-initialize_block.default <- initialize_block.transform_block
-
-#' @rdname new_block
-#' @export
-initialize_block.plot_block <- initialize_block.transform_block
 
 #' @rdname new_block
 #' @export

@@ -3,17 +3,14 @@
 \name{generate_server}
 \alias{generate_server}
 \alias{generate_server.block}
-\alias{generate_server.transform_block}
 \alias{generate_server.plot_block}
 \alias{generate_server.ggiraph_block}
 \alias{generate_server.stack}
 \title{Server}
 \usage{
-generate_server(x, ...)
+generate_server(x, in_dataset = data.frame(), ...)
 
-\method{generate_server}{block}(x, ...)
-
-\method{generate_server}{transform_block}(x, in_dat, id, ...)
+\method{generate_server}{block}(x, in_dataset = data.frame(), ...)
 
 \method{generate_server}{plot_block}(x, in_dat, id, ...)
 

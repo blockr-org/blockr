@@ -2,7 +2,8 @@ devtools::load_all()
 library(shiny)
 
 stack <- new_stack(
-  block_data()
+  block_data(),
+  block_select()
 )
 
 ui <- fluidPage(

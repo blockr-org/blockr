@@ -7,20 +7,19 @@
 #'
 #' @export
 #' @import shiny
-generate_server <- function(x, ...) {
+generate_server <- function(x, in_dataset = data.frame(), ...) {
   UseMethod("generate_server")
 }
 
 #' @rdname generate_server
 #' @export
-generate_server.block <- function(x, ...) {
+generate_server.block <- function(x, in_dataset = data.frame(), ...) {
   id <- attr(x, "name")
 
   moduleServer(
     id,
     function(input, output, session) {
       ns <- session$ns
-      block_reactive <- reactiveVal(x)
 
       # we compute named list of inputs for this block
       # this is to be used as environment for the
@@ -31,7 +30,18 @@ generate_server.block <- function(x, ...) {
           lapply(\(x) input[[x]])
 
         names(values) <- names(x)
+
+        values <- append(values, list(data = in_dataset()))
+
         return(values)
+      })
+
+      observeEvent(env(), {
+        x |>
+          names() |>
+          lapply(\(name) {
+            update_field(x[[name]], env()[[name]], env())
+          })
       })
 
       out_dataset <- reactive({
@@ -49,76 +59,7 @@ generate_server.block <- function(x, ...) {
         prettyNum(ncol(out_dataset()), big.mark = ",")
       })
 
-      out_dataset
-    }
-  )
-}
-
-#' @param in_dat Reactive input data
-#' @rdname generate_server
-#' @export
-generate_server.transform_block <- function(x, in_dat, id, ...) {
-  obs_expr <- function(x) {
-    splice_args(
-      list(in_dat(), ..(args)),
-      args = lapply(unlst(input_ids(x)), quoted_input_entry)
-    )
-  }
-
-  set_expr <- function(x) {
-    splice_args(
-      blk(update_fields(blk(), session, in_dat(), ..(args))),
-      args = rapply(input_ids(x), quoted_input_entries, how = "replace")
-    )
-  }
-
-  moduleServer(
-    id,
-    function(input, output, session) {
-      ns <- session$ns
-      blk <- reactiveVal(x)
-
-      o <- observeEvent(
-        eval(obs_expr(blk())),
-        secure(eval(set_expr(blk()))),
-        ignoreInit = TRUE
-      )
-
-      # For submit blocks like filter, summarise,
-      # join that can have computationally intense tasks
-      # and have nested fields, we require to click on
-      # the action button before doing anything.
-      out_dat <- if ("submit_block" %in% class(x)) {
-        eventReactive(input$submit, {
-          evaluate_block(blk(), data = in_dat())
-        })
-      } else {
-        reactive(
-          evaluate_block(blk(), data = in_dat())
-        )
-      }
-
-      output$res <- server_output(x, out_dat, output)
-      output$code <- server_code(x, blk, output)
-
-      output$nrow <- renderText({
-        prettyNum(nrow(out_dat()), big.mark = ",")
-      })
-
-      output$ncol <- renderText({
-        prettyNum(ncol(out_dat()), big.mark = ",")
-      })
-
-      # Cleanup module inputs (UI and server side)
-      # and observer
-      observeEvent(input$remove, {
-        message(sprintf("CLEANING UP BLOCK %s", id))
-        remove_shiny_inputs(id = id, input)
-        o$destroy()
-        session$userData$is_cleaned(TRUE)
-      })
-
-      out_dat
+      return(out_dataset)
     }
   )
 }
@@ -198,7 +139,18 @@ generate_server.stack <- function(x, id = NULL, new_blocks = NULL, ...) {
   moduleServer(
     id = id,
     function(input, output, session) {
-      blocks <- lapply(x$blocks, generate_server)
+      # initialize blocks' servers
+      # every blocks takes in data from the previous
+      # and returns data
+      data <- list()
+      for (i in seq_along(x$blocks)) {
+        if (i == 1L) {
+          data[[i]] <- generate_server(x$blocks[[i]], in_dataset = reactive(data.frame()))
+          next
+        }
+
+        data[[i]] <- generate_server(x$blocks[[i]], in_dataset = data[[i - 1L]])
+      }
 
       observe({
         session$sendCustomMessage(
@@ -207,7 +159,8 @@ generate_server.stack <- function(x, id = NULL, new_blocks = NULL, ...) {
         )
       })
 
-      blocks
+      # to change
+      return(data)
     }
   )
 }

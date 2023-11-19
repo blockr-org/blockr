@@ -5,7 +5,7 @@ evaluate_block <- function(x, evn, ...) {
 }
 
 #' @export
-evaluate_block.data_block <- function(x, env, ...) {
+evaluate_block.block <- function(x, env, ...) {
   stopifnot(...length() == 0L)
   eval(attr(x, "expr"), env)
 }

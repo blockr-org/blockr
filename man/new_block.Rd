@@ -3,30 +3,16 @@
 \name{new_block}
 \alias{new_block}
 \alias{is_block}
-\alias{is_initialized}
-\alias{is_initialized.block}
-\alias{initialize_block}
 \alias{block_data}
-\alias{initialize_block.data_block}
 \alias{new_filter_block}
-\alias{filter_block}
-\alias{new_select_block}
+\alias{block_select}
 \alias{new_summarize_block}
-\alias{summarize_block}
-\alias{select_block}
 \alias{arrange_block}
 \alias{group_by_block}
 \alias{new_join_block}
-\alias{join_block}
 \alias{new_head_block}
-\alias{head_block}
 \alias{new_plot_block}
-\alias{plot_block}
 \alias{new_ggiraph_block}
-\alias{ggiraph_block}
-\alias{initialize_block.transform_block}
-\alias{initialize_block.default}
-\alias{initialize_block.plot_block}
 \alias{update_fields}
 \alias{update_fields.data_block}
 \alias{update_fields.transform_block}
@@ -59,15 +45,7 @@ new_block(
 
 is_block(x)
 
-is_initialized(x)
-
-\method{is_initialized}{block}(x)
-
-initialize_block(x, ...)
-
-block_data(..., datasets = c("iris", "mtcars", "cars"), selected = NULL)
-
-\method{initialize_block}{data_block}(x, ...)
+block_data(..., datasets = c("iris", "mtcars", "cars"), selected = datasets[1])
 
 new_filter_block(
   data,
@@ -77,9 +55,7 @@ new_filter_block(
   ...
 )
 
-filter_block(data, ...)
-
-new_select_block(data, columns = colnames(data)[1], ...)
+block_select(data = data.frame(), columns = colnames(data)[1], ...)
 
 new_summarize_block(
   data,
@@ -87,10 +63,6 @@ new_summarize_block(
   default_columns = character(),
   ...
 )
-
-summarize_block(data, ...)
-
-select_block(data, ...)
 
 arrange_block(data, ...)
 
@@ -104,11 +76,7 @@ new_join_block(
   ...
 )
 
-join_block(data, ...)
-
 new_head_block(data, n_rows = numeric(), n_rows_min = 1L, ...)
-
-head_block(data, ...)
 
 new_plot_block(
   data,
@@ -120,8 +88,6 @@ new_plot_block(
   ...
 )
 
-plot_block(data, ...)
-
 new_ggiraph_block(
   data,
   plot_opts = list(colors = c("blue", "red"), point_size = 3, title = "Plot title", theme
@@ -131,14 +97,6 @@ new_ggiraph_block(
     lines = list(show = TRUE, group = character(), color = character())),
   ...
 )
-
-ggiraph_block(data, ...)
-
-\method{initialize_block}{transform_block}(x, data, ...)
-
-\method{initialize_block}{default}(x, data, ...)
-
-\method{initialize_block}{plot_block}(x, data, ...)
 
 update_fields(x, ...)
 
@@ -176,7 +134,7 @@ demo_filter_block_2(data, ...)
 
 demo_summarize_block(data, ...)
 
-\method{is_initialized}{field}(x)
+is_initialized.field(x)
 }
 \arguments{
 \item{fields}{A list of field, each entry inheriting from \code{"field"}}
