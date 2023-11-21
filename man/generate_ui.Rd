@@ -11,6 +11,8 @@
 \alias{generate_ui}
 \alias{generate_ui.block}
 \alias{generate_ui.stack}
+\alias{ui_fields}
+\alias{ui_fields.block}
 \alias{ui_input}
 \alias{ui_input.string_field}
 \alias{ui_input.select_field}
@@ -59,9 +61,13 @@ server_code(x, state, output)
 
 generate_ui(x, ...)
 
-\method{generate_ui}{block}(x, id, ..., .hidden = FALSE)
+\method{generate_ui}{block}(x, id, ..., .hidden = TRUE)
 
 \method{generate_ui}{stack}(x, id = NULL, ...)
+
+ui_fields(x, ...)
+
+\method{ui_fields}{block}(x, id, ..., .hidden = TRUE)
 
 ui_input(x, id, name)
 

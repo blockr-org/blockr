@@ -14,7 +14,8 @@ generate_ui <- function(x, ...) {
 #' @param id UI IDs
 #' @rdname generate_ui
 #' @export
-generate_ui.block <- function(x, id, ..., .hidden = FALSE) {
+generate_ui.block <- function(x, id, ..., .hidden = TRUE) {
+
   stopifnot(...length() == 0L)
 
   ns <- NS(id)
@@ -37,11 +38,10 @@ generate_ui.block <- function(x, id, ..., .hidden = FALSE) {
   }
 
   inputs_hidden <- ""
+
   if (.hidden) {
     inputs_hidden <- "d-none"
   }
-
-  layout <- attr(x, "layout")
 
   div(
     class = block_class,
@@ -52,10 +52,7 @@ generate_ui.block <- function(x, id, ..., .hidden = FALSE) {
       shiny::div(
         class = "card-body p-1",
         header,
-        div(
-          class = sprintf("block-inputs %s", inputs_hidden),
-          layout(fields)
-        ),
+        ui_fields(x, id, .hidden = .hidden),
         div(
           class = "collapse block-code",
           id = code_id,
@@ -236,6 +233,39 @@ stack_header <- function(stack, ns) {
         )
       )
     )
+  )
+}
+
+#' @rdname generate_ui
+#' @export
+ui_fields <- function(x, ...) {
+  UseMethod("ui_fields")
+}
+
+#' @rdname generate_ui
+#' @export
+ui_fields.block <- function(x, id, ..., .hidden = TRUE) {
+
+  ns <- NS(id)
+
+  fields <- Map(
+    ui_input,
+    x,
+    id = chr_ply(names(x), ns),
+    name = names(x)
+  )
+
+  inputs_hidden <- ""
+
+  if (.hidden) {
+    inputs_hidden <- "d-none"
+  }
+
+  layout <- attr(x, "layout")
+
+  div(
+    class = sprintf("block-inputs %s", inputs_hidden),
+    layout(fields)
   )
 }
 
