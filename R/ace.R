@@ -231,3 +231,18 @@ ace_module_ui <- function(id, exprs_init = NULL) {
     )
   )
 }
+
+
+# ui <-  bslib::page_fluid(
+#   ace_module_ui("m1", exprs_init = c(a = "bla", b = "blabla")),
+#   verbatimTextOutput("o_result")
+# )
+# server <- function(input, output) {
+#   r_result <- ace_module_server("m1")
+#   output$o_result <- renderPrint({
+#     r_result()
+#   })
+# }
+# # Run the application
+# shinyApp(ui = ui, server = server)
+

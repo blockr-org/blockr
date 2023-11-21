@@ -17,6 +17,22 @@ new_mutate_block <- function(data, value = NULL, ...) {
 }
 
 
+#' @rdname new_block
+#' @export
+mutate_block <- function(data, ...) {
+  initialize_block(new_mutate_block(data, ...), data)
+}
+
+
+# DISCUSS if new_namedchar_field() works properly, the code above is
+# sufficient to generate the mutate block
+
+# summarize could use the same field, with a select_field for the group_by?
+
+
+
+
+
 # Build mutate expression based on a named character vector
 #
 # mutate_expr(value = c(a = "2.1", b = "4.5"))
@@ -46,19 +62,60 @@ mutate_expr <- function(value = c(a = "2.1", b = "4.5")) {
   )
 }
 
+
+# DISCUSS: Generalize generate_server() so it works with module based fields
+#
 generate_server.mutate_block <- function(x, in_dat, id, ...) {
   moduleServer(
     id,
     function(input, output, session) {
       ns <- session$ns
 
-      # not the same as the init value
-      r_value <- ace_module_server(id)
 
       # only update on init! Init value is in x
-      output$value <- renderUI(ace_module_ui(ns(id), exprs_init = value(x$value, "value")))
+
+      # module fields must have their v
+
+      # 0. apply server_module_ui()
+      # FIXME gerneralize for all module fields
+
+
+      output$value <- renderUI(module_field_ui(x$value, ns(id)))
+
+      # output$value <- renderUI(ace_module_ui(ns(id), exprs_init = value(x$value, "value")))
 
       r_blk <- reactiveVal(x)
+
+
+      # # 1. Default Field Input, Nicolas Style ----------------------------------
+      # "If any input changes, update fields in the block"
+      obs_expr <- function(x) {
+        splice_args(
+          list(in_dat(), ..(args)),
+          args = lapply(unlst(input_ids(x)), quoted_input_entry)
+        )
+      }
+
+      set_expr <- function(x) {
+        splice_args(
+          r_blk(update_fields(r_blk(), session, in_dat(), ..(args))),
+          args = rapply(input_ids(x), quoted_input_entries, how = "replace")
+        )
+      }
+
+      o0 <- observeEvent(
+        eval(obs_expr(r_blk())),
+        secure(eval(set_expr(r_blk()))),
+        ignoreInit = TRUE
+      )
+
+      # 2. Input from Modules --------------------------------------------------
+      # "If any input changes, update fields in the block"
+      # FIXME gerneralize for all module fields
+
+      r_value <- module_field_server(x$value, id)
+      # r_value <- ace_module_server(id)
+
 
       # rather than input, I want the fields to be updated on r_value()
       o <- observeEvent(
@@ -70,7 +127,6 @@ generate_server.mutate_block <- function(x, in_dat, id, ...) {
             in_dat(),
             value = r_value()
           )
-
           attr(blk_updated, "expr") <- mutate_expr(r_value())
           r_blk(blk_updated)
 
@@ -138,8 +194,3 @@ update_fields.mutate_block <- function(x, session, data, ...) {
 }
 
 
-#' @rdname new_block
-#' @export
-mutate_block <- function(data, ...) {
-  initialize_block(new_mutate_block(data, ...), data)
-}

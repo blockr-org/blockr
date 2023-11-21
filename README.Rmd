@@ -50,7 +50,7 @@ library(blockr.data)
 
 stack <- new_stack(
   data_block,
-  demo_block,
+  mutate_block,
   plot_block
 )
 
