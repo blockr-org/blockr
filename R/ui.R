@@ -37,6 +37,43 @@ ui_fields.block <- function(x, ns, inputs_hidden, ...) {
   )
 }
 
+
+# A one arg per row layout that should work well in most cases (experimental)
+ui_fields.transform_block <- function(x, ns, inputs_hidden, ...) {
+  html_card <- function(field, field_name) {
+    div(
+      div(
+        tags$h5(attr(field, "title"))
+      ),
+      div(class = "row mb-3",
+        div(
+          class = "col-4",
+          attr(field, "descr")
+        ),
+        div(class = "col-8",
+          tags$div(
+            class = "w-100",
+            ui_input(field, id = ns(field_name), name = NULL)
+          )
+        )
+      )
+    )
+
+  }
+
+  cards <- Map(
+    html_card,
+    field = x,
+    field_name = names(x)
+  )
+
+  div(
+    class = sprintf("block-inputs %s", inputs_hidden),
+    div(cards, class = "mt-3")
+  )
+}
+
+
 #' @rdname generate_ui
 #' @export
 block_body <- function(x, ...) {
@@ -293,7 +330,7 @@ ui_input <- function(x, id, name) {
 #' @rdname generate_ui
 #' @export
 ui_input.string_field <- function(x, id, name) {
-  textInput(input_ids(x, id), name, value(x))
+  textInput(input_ids(x, id), name, value(x), width = "100%")
 }
 
 #' @rdname generate_ui
@@ -301,6 +338,7 @@ ui_input.string_field <- function(x, id, name) {
 ui_input.select_field <- function(x, id, name) {
   selectizeInput(
     input_ids(x, id), name, value(x, "choices"), value(x), value(x, "multiple"),
+    width = "100%",  # control width from outside div
     options = list(
       dropdownParent = "body",
       placeholder = "Please select an option below"
@@ -318,7 +356,8 @@ ui_input.switch_field <- function(x, id, name) {
 #' @export
 ui_input.numeric_field <- function(x, id, name) {
   numericInput(
-    input_ids(x, id), name, value(x), value(x, "min"), value(x, "max")
+    input_ids(x, id), name, value(x), value(x, "min"), value(x, "max"),
+    width = "100%"  # control width from outside div
   )
 }
 
@@ -421,7 +460,7 @@ ui_update.string_field <- function(x, session, id, name) {
 #' @export
 ui_update.select_field <- function(x, session, id, name) {
   updateSelectInput(
-    session, input_ids(x, id), name, value(x, "choices"), value(x)
+    session, input_ids(x, id), choices = value(x, "choices"), selected = value(x)
   )
 }
 

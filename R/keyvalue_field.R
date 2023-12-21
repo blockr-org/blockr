@@ -88,7 +88,7 @@ ui_input.keyvalue_field <- function(x, id, name) {
         ),
         actionButton(
           ns("i_submit"),
-          label = "Submit",
+          label = NULL,
           icon = icon("paper-plane"),
           class = "btn btn-primary"
         )
@@ -102,7 +102,7 @@ ui_input.keyvalue_field <- function(x, id, name) {
 new_keyvalue_field <- function(
     value = numeric(),
     ...) {
-  new_field(value, class = "keyvalue_field")
+  new_field(value, ..., class = "keyvalue_field")
 }
 
 #' @rdname keyvalue_field

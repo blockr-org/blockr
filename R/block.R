@@ -640,10 +640,21 @@ new_plot_block <- function(
   # For plot blocks, fields will create input to style the plot ...
   all_cols <- function(data) colnames(data)
   fields <- list(
-    x_var = new_select_field("VISIT", all_cols),
-    y_var = new_select_field("MEAN", all_cols),
-    color = new_select_field("ACTARM", all_cols),
-    shape = new_select_field("ACTARM", all_cols),
+    x_var = new_select_field(
+      "VISIT",
+      all_cols,
+      title = "x-Axis",
+      descr = "Aesthetic mappings describe how variables in the data are mapped
+      to visual properties (aesthetics) of geoms. Aesthetic mappings can be set
+      in ggplot() and in individual layers."
+    ),
+    y_var = new_select_field("MEAN", all_cols, title = "y-Axis",
+      descr = "Aesthetic mappings describe how variables in the data are mapped
+      to visual properties (aesthetics) of geoms. Aesthetic mappings can be set
+      in ggplot() and in individual layers."
+    ),
+    color = new_select_field("ACTARM", all_cols, title = "Color", status = "disabled"),
+    shape = new_keyvalue_field(),
     point_size = new_range_field(plot_opts$point_size, min = 1, max = 10),
     title = new_string_field(plot_opts$title),
     x_lab = new_string_field(plot_opts$x_lab),
@@ -720,7 +731,7 @@ new_plot_block <- function(
     }),
     ...,
     class = c("plot_block"),
-    layout = plot_layout_fields
+    layout = default_plot_fields
   )
 }
 
