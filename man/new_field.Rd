@@ -47,6 +47,9 @@ new_field(
   value,
   ...,
   type = c("literal", "name"),
+  title = "",
+  descr = "",
+  status = c("active", "disabled", "invisible"),
   class = character(),
   exclude = FALSE
 )
