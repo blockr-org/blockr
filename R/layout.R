@@ -130,3 +130,39 @@ join_layout_fields <- function(fields, ...) {
     fields$expression
   )
 }
+
+html_layout_fields <- function(fields, ...) {
+  tagList(
+    div(
+      class = "row",
+      div(
+        class = "col-md-4",
+        fields$prefix
+      ),
+      div(
+        class = "col-md-4",
+        fields$content
+      ),
+      div(
+        class = "col-md-4",
+        fields$suffix
+      )
+    ),
+    div(
+      class = "row",
+      div(
+        class = "col-md-4",
+        fields$prefix_tag
+      ),
+      div(
+        class = "col-md-4",
+        fields$main_tag
+      ),
+      div(
+        class = "col-md-4",
+        fields$suffix_tag
+      )
+    ),
+    fields$expression
+  )
+}

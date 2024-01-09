@@ -148,6 +148,11 @@ evaluate_block.plot_block <- function(x, data, ...) {
 #' @export
 evaluate_block.ggiraph_block <- evaluate_block.plot_block
 
+#' @param data Result from previous block
+#' @rdname new_block
+#' @export
+evaluate_block.html_block <- evaluate_block.plot_block
+
 #' @rdname new_block
 #' @param dat Multiple datasets.
 #' @param selected Selected dataset.
@@ -734,6 +739,54 @@ plot_block <- function(data, ...) {
   initialize_block(new_plot_block(data, ...), data)
 }
 
+#' @rdname new_block
+#' @export
+html_block <- function(data, ...) {
+  initialize_block(new_html_block(data, ...), data)
+}
+
+#' @param data Tabular data in which to select some columns.
+#' @param plot_opts List containing options for ggplot (color, ...).
+#' @param ... Any other params. TO DO
+#' @rdname new_block
+#' @import ggplot2
+#' @export
+new_html_block <- function(
+  data,
+  ...
+) {
+  # For plot blocks, fields will create input to style the plot ...
+  fields <- list(
+    prefix = new_string_field(""),
+    suffix = new_string_field(""),
+    content = new_string_field(""),
+    main_tag = new_string_field("strong"),
+    prefix_tag = new_string_field("span"),
+    suffix_tag = new_string_field("span")
+  )
+
+  new_block(
+    fields = fields,
+    expr = quote({
+      prefix_tag <- do.call(.(prefix_tag), list(.(prefix), .noWS = "after"))
+      suffix_tag <- do.call(.(suffix_tag), list(.(suffix), .noWS = "before"))
+
+      do.call(
+        .(main_tag),
+        list(
+          prefix_tag,
+          .(content),
+          suffix_tag,
+          .noWS = "after"
+        )
+      )
+    }),
+    ...,
+    layout = html_layout_fields,
+    class = c("html_block")
+  )
+}
+
 #' @param data Tabular data in which to select some columns.
 #' @param plot_opts List containing options for ggplot (color, ...).
 #' @param ... Any other params. TO DO
@@ -965,3 +1018,8 @@ update_fields.plot_block <- update_fields.transform_block
 #' @rdname new_block
 #' @export
 update_fields.ggiraph_block <- update_fields.transform_block
+
+#' @param data Block input data
+#' @rdname new_block
+#' @export
+update_fields.html_block <- update_fields.transform_block

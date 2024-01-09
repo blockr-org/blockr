@@ -16,6 +16,7 @@
 \alias{evaluate_block.transform_block}
 \alias{evaluate_block.plot_block}
 \alias{evaluate_block.ggiraph_block}
+\alias{evaluate_block.html_block}
 \alias{new_data_block}
 \alias{data_block}
 \alias{initialize_block.data_block}
@@ -33,6 +34,8 @@
 \alias{head_block}
 \alias{new_plot_block}
 \alias{plot_block}
+\alias{html_block}
+\alias{new_html_block}
 \alias{new_ggiraph_block}
 \alias{ggiraph_block}
 \alias{initialize_block.transform_block}
@@ -43,6 +46,7 @@
 \alias{update_fields.transform_block}
 \alias{update_fields.plot_block}
 \alias{update_fields.ggiraph_block}
+\alias{update_fields.html_block}
 \alias{new_cheat_block}
 \alias{cheat_block}
 \alias{new_asfactor_block}
@@ -93,6 +97,8 @@ evaluate_block(x, ...)
 \method{evaluate_block}{plot_block}(x, data, ...)
 
 \method{evaluate_block}{ggiraph_block}(x, data, ...)
+
+\method{evaluate_block}{html_block}(x, data, ...)
 
 new_data_block(
   ...,
@@ -159,6 +165,10 @@ new_plot_block(
 
 plot_block(data, ...)
 
+html_block(data, ...)
+
+new_html_block(data, ...)
+
 new_ggiraph_block(
   data,
   plot_opts = list(colors = c("blue", "red"), point_size = 3, title = "Plot title", theme
@@ -186,6 +196,8 @@ update_fields(x, ...)
 \method{update_fields}{plot_block}(x, session, data, ...)
 
 \method{update_fields}{ggiraph_block}(x, session, data, ...)
+
+\method{update_fields}{html_block}(x, session, data, ...)
 
 new_cheat_block(data, ...)
 
