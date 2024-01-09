@@ -10,6 +10,7 @@
 \alias{generate_server.stack}
 \alias{handle_remove_block}
 \alias{handle_remove_block.block}
+\alias{generate_server.workspace}
 \title{Server}
 \usage{
 generate_server(x, ...)
@@ -29,13 +30,15 @@ generate_server(x, ...)
 handle_remove_block(x, ...)
 
 \method{handle_remove_block}{block}(x, vals, session = getDefaultReactiveDomain(), ...)
+
+\method{generate_server}{workspace}(x, id = NULL, ...)
 }
 \arguments{
 \item{x}{Block element.}
 
 \item{...}{Generic consistency.}
 
-\item{id}{Unique module id. Useful when the stack is called as a module.}
+\item{id}{Unique module id. Useful when the workspace is called as a module.}
 
 \item{in_dat}{Reactive input data}
 
