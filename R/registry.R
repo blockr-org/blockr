@@ -183,3 +183,36 @@ construct_block <- function(block, ...) {
 
   block(...)
 }
+
+
+# Define a function to parse block descriptions and create a table
+# example:  parse_block_descriptions(available_blocks())
+parse_block_descriptions <- function(block_descriptions) {
+  # Create an empty data frame to hold the extracted information
+  blocks_info <- data.frame(
+    Name = character(),
+    Description = character(),
+    Classes = character(),
+    Input = character(),
+    Output = character(),
+    Package = character(),
+    stringsAsFactors = FALSE
+  )
+  
+  # Iterate over each block description and extract information
+  for (block in names(block_descriptions)) {
+    block_info <- block_descriptions[[block]]
+    new_row <- data.frame(
+      Name = attr(block_info, "name"),
+      Description = attr(block_info, "description"),
+      Classes = paste(attr(block_info, "classes"), collapse = ", "),
+      Input = attr(block_info, "input"),
+      Output = attr(block_info, "output"),
+      Package = attr(block_info, "package"),
+      stringsAsFactors = FALSE
+    )
+    blocks_info <- rbind(blocks_info, new_row)
+  }
+  
+  return(blocks_info)
+}
