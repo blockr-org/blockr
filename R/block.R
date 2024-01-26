@@ -185,6 +185,27 @@ new_data_block <- function(
   )
 }
 
+
+
+choose_file_reader <- function(path) {
+  # Extract the file extension from the path
+  # TODO: Investigate why vector of length > 1 returned
+  file_extension <- tools::file_ext(path)[1]
+  print(file_extension)
+  # Switch statement to choose the correct file reading function
+  read_func <- switch(file_extension,
+         csv = utils::read.csv,
+         sas = haven::read_sas, 
+         xpt = haven::read_xpt, 
+         json = jsonlite::fromJSON,
+         rds = readRDS,
+         stop("Unsupported file type")
+  )
+  return(read_func)
+}
+
+
+
 #' @rdname new_block
 #' @export
 data_block <- function(...) {
@@ -200,8 +221,11 @@ new_upload_block <- function(...) {
       return(data.frame())
     }
 
-    data_func <- utils::read.csv # TO DO switch
-    bquote(
+
+  # Choose the correct file reading function
+  data_func <- choose_file_reader(dat)
+
+  bquote(
       .(read_func)(.(path)),
       list(read_func = data_func, path = dat$datapath)
     )
@@ -233,9 +257,10 @@ new_filesbrowser_block <- function(volumes = c(home = path.expand("~")), ...) {
       cat("No files have been selected yet.")
       return(data.frame())
     }
+ 
 
     files <- shinyFiles::parseFilePaths(volumes, dat)
-    data_func <- utils::read.csv # TO DO switch
+    data_func <-  choose_file_reader(dat)
 
     bquote(
       .(read_func)(.(path)),
