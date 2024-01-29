@@ -30,6 +30,15 @@ register_block(
 )
 
 
+register_block(
+  constructor = corrplot_block,
+  name = "corrplot block",
+  description = "Creates a correlation plot",
+  classes = c("corrplot_block", "plot_block"),
+  input = "data.frame",
+  output = "list"
+)
+
 ## TODO: new join block not working 
 # register_block(
 #   constructor = new_join_block,
