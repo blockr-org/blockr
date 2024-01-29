@@ -99,7 +99,7 @@ evaluate_block(x, ...)
 
 new_data_block(
   ...,
-  dat = as.environment("package:datasets"),
+  dat = as.environment("package:blockr.data"),
   selected = character()
 )
 

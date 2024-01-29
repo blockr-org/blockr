@@ -10,6 +10,25 @@ register_block(
   input = NA_character_,
   output = "data.frame"
 )
+register_block(
+  constructor = lm_block,
+  name = "linear model block",
+  description = "Enter a formula",
+  classes = c("lm_block", "transform_block"),
+  input = "data.frame",
+  output = "data.frame"
+)
+
+
+register_block(
+  constructor = mutate_block,
+  name = "mutate block",
+  description = "Creates a linear transformation",
+  classes = c("mutate_block", "transform_block"),
+  input = "data.frame",
+  output = "data.frame"
+)
+
 
 ## TODO: new join block not working 
 # register_block(
