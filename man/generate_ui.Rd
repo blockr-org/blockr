@@ -5,6 +5,7 @@
 \alias{server_output}
 \alias{server_output.block}
 \alias{server_output.plot_block}
+\alias{server_output.html_block}
 \alias{server_code}
 \alias{server_code.block}
 \alias{generate_ui}
@@ -56,7 +57,7 @@
 \alias{uiOutputBlock}
 \alias{uiOutputBlock.block}
 \alias{uiOutputBlock.plot_block}
-\alias{uiCode}
+\alias{uiOutputBlock.html_block}
 \alias{uiCode.block}
 \title{UI}
 \usage{
@@ -67,6 +68,8 @@ server_output(x, result, output)
 \method{server_output}{block}(x, result, output)
 
 \method{server_output}{plot_block}(x, result, output)
+
+\method{server_output}{html_block}(x, result, output)
 
 server_code(x, state, output)
 
@@ -170,7 +173,7 @@ uiOutputBlock(x, ns)
 
 \method{uiOutputBlock}{plot_block}(x, ns)
 
-uiCode(x, ns)
+\method{uiOutputBlock}{html_block}(x, ns)
 
 \method{uiCode}{block}(x, ns)
 }

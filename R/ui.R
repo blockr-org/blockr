@@ -732,6 +732,13 @@ uiOutputBlock.plot_block <- function(x, ns) {
 
 #' @rdname generate_ui
 #' @export
+uiOutputBlock.html_block <- function(x, ns) {
+  # maybe we can change this
+  # this reuses many functions of plot_block
+  # so we use the plot id
+  shiny::htmlOutput(ns("plot"))
+}
+
 uiCode <- function(x, ns) {
   UseMethod("uiCode", x)
 }

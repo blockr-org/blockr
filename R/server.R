@@ -226,6 +226,10 @@ generate_server.plot_block <- function(x, in_dat, id, ...) {
   generate_server_block(x = x, in_dat = in_dat, id = id, display = "plot")
 }
 
+#' @rdname generate_server
+#' @export
+generate_server.html_block <- generate_server.plot_block
+
 #' @param id Unique module id. Useful when the stack is called as a module.
 #' @param new_block For dynamically inserted blocks.
 #' @param workspace Stack workspace
@@ -651,6 +655,12 @@ server_output.block <- function(x, result, output) {
 #' @export
 server_output.plot_block <- function(x, result, output) {
   shiny::renderPlot(result())
+}
+
+#' @rdname generate_ui
+#' @export
+server_output.html_block <- function(x, result, output) {
+  shiny::renderUI(result())
 }
 
 #' @param state Block state

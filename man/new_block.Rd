@@ -16,6 +16,7 @@
 \alias{evaluate_block.transform_block}
 \alias{evaluate_block.plot_block}
 \alias{evaluate_block.plot_layer_block}
+\alias{evaluate_block.html_block}
 \alias{new_data_block}
 \alias{data_block}
 \alias{new_upload_block}
@@ -37,6 +38,8 @@
 \alias{join_block}
 \alias{new_head_block}
 \alias{head_block}
+\alias{html_block}
+\alias{new_html_block}
 \alias{initialize_block.transform_block}
 \alias{initialize_block.default}
 \alias{initialize_block.plot_block}
@@ -44,6 +47,7 @@
 \alias{update_fields.data_block}
 \alias{update_fields.transform_block}
 \alias{update_fields.plot_block}
+\alias{update_fields.html_block}
 \alias{is_initialized.field}
 \alias{mutate_block}
 \title{Blocks}
@@ -77,6 +81,8 @@ evaluate_block(x, ...)
 \method{evaluate_block}{plot_block}(x, data, ...)
 
 \method{evaluate_block}{plot_layer_block}(x, data, ...)
+
+\method{evaluate_block}{html_block}(x, data, ...)
 
 new_data_block(
   ...,
@@ -141,6 +147,10 @@ new_head_block(data, n_rows = numeric(), n_rows_min = 1L, ...)
 
 head_block(data, ...)
 
+html_block(data, ...)
+
+new_html_block(data, ...)
+
 \method{initialize_block}{transform_block}(x, data, ...)
 
 \method{initialize_block}{default}(x, data, ...)
@@ -155,6 +165,8 @@ update_fields(x, ...)
 
 \method{update_fields}{plot_block}(x, session, data, ...)
 
+\method{update_fields}{html_block}(x, session, data, ...)
+
 \method{is_initialized}{field}(x)
 
 mutate_block(data, ...)
@@ -168,7 +180,7 @@ of the fields)}
 
 \item{name}{Block name}
 
-\item{...}{Further (metadata) attributes}
+\item{...}{Any other params. TO DO}
 
 \item{class}{Block subclass}
 

@@ -155,6 +155,11 @@ evaluate_block.plot_layer_block <- function(x, data, ...) {
   )
 }
 
+#' @param data Result from previous block
+#' @rdname new_block
+#' @export
+evaluate_block.html_block <- evaluate_block.plot_block
+
 #' @rdname new_block
 #' @param dat Multiple datasets.
 #' @param selected Selected dataset.
@@ -700,6 +705,81 @@ head_block <- function(data, ...) {
 
 #' @rdname new_block
 #' @export
+html_block <- function(data, ...) {
+  initialize_block(new_html_block(data, ...), data)
+}
+
+#' @param data Tabular data in which to select some columns.
+#' @param ... Any other params. TO DO
+#' @rdname new_block
+#' @export
+new_html_block <- function(
+  data,
+  ...
+) {
+  # For plot blocks, fields will create input to style the plot ...
+  fields <- list(
+    prefix = new_string_field(""),
+    suffix = new_string_field(""),
+    main_tag = new_string_field("h1"),
+    prefix_tag = new_string_field("span"),
+    suffix_tag = new_string_field("span"),
+    icon = new_string_field("info"),
+    text_colour = new_string_field("white"),
+    colour = new_select_field(
+      "info",
+      c(
+        "white",
+        "primary",
+        "secondary",
+        "info",
+        "success",
+        "danger",
+        "warning",
+        "dark",
+        "light"
+      )
+    )
+  )
+
+  new_block(
+    fields = fields,
+    expr = quote({
+      prefix_tag <- do.call(.(prefix_tag), list(.(prefix), .noWS = "after"))
+      suffix_tag <- do.call(.(suffix_tag), list(.(suffix), .noWS = "before"))
+      main_tag <- do.call(.(main_tag), list(data[1], .noWS = "after"))
+
+      cl <- sprintf("w-100 p-2 rounded bg-%s", .(colour))
+
+      icon <- ""
+      if (.(icon) != "")
+        icon <- icon(.(icon), class = "float-right")
+
+      div(
+        class = cl,
+        style = sprintf("color:%s;", .(text_colour)),
+        div(
+          class = "row",
+          div(
+            class = "col-md-10",
+            prefix_tag,
+            main_tag,
+            suffix_tag
+          ),
+          div(
+            class = "col-md-2 fs-1",
+            icon
+          )
+        )
+      )
+    }),
+    ...,
+    lass = c("html_block")
+  )
+}
+
+#' @rdname new_block
+#' @export
 initialize_block.transform_block <- function(x, data, ...) {
   env <- list(data = data)
 
@@ -767,3 +847,8 @@ update_fields.transform_block <- function(x, session, data, ...) {
 #' @rdname new_block
 #' @export
 update_fields.plot_block <- update_fields.transform_block
+
+#' @param data Block input data
+#' @rdname new_block
+#' @export
+update_fields.html_block <- update_fields.transform_block
