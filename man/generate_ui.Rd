@@ -4,6 +4,8 @@
 \alias{ui_input.keyvalue_field}
 \alias{server_output}
 \alias{server_output.block}
+\alias{server_output.upload_block}
+\alias{server_output.filesbrowser_block}
 \alias{server_output.plot_block}
 \alias{server_code}
 \alias{server_code.block}
@@ -55,6 +57,8 @@
 \alias{ui_update.list_field}
 \alias{uiOutputBlock}
 \alias{uiOutputBlock.block}
+\alias{uiOutputBlock.upload_block}
+\alias{uiOutputBlock.filesbrowser_block}
 \alias{uiOutputBlock.plot_block}
 \alias{uiCode}
 \alias{uiCode.block}
@@ -65,6 +69,10 @@
 server_output(x, result, output)
 
 \method{server_output}{block}(x, result, output)
+
+\method{server_output}{upload_block}(x, result, output)
+
+\method{server_output}{filesbrowser_block}(x, result, output)
 
 \method{server_output}{plot_block}(x, result, output)
 
@@ -100,13 +108,13 @@ inject_remove_button(x, ...)
 
 \method{inject_remove_button}{block}(x, ns, .hidden = !getOption("BLOCKR_DEV", FALSE), ...)
 
-\method{inject_remove_button}{stack}(x, ns, ...)
+\method{inject_remove_button}{stack}(x, id, ...)
 
 \method{remove_button}{stack}(x, id, ...)
 
 stack_header(x, ...)
 
-\method{generate_ui}{workspace}(x, id = NULL, ...)
+\method{generate_ui}{workspace}(x, id, ...)
 
 ui_input(x, id, name)
 
@@ -168,6 +176,10 @@ uiOutputBlock(x, ns)
 
 \method{uiOutputBlock}{block}(x, ns)
 
+\method{uiOutputBlock}{upload_block}(x, ns)
+
+\method{uiOutputBlock}{filesbrowser_block}(x, ns)
+
 \method{uiOutputBlock}{plot_block}(x, ns)
 
 uiCode(x, ns)
@@ -177,7 +189,7 @@ uiCode(x, ns)
 \arguments{
 \item{x}{Object for which to generate UI components}
 
-\item{id}{UI IDs}
+\item{id}{Parent ID}
 
 \item{name}{Field name}
 
