@@ -119,9 +119,9 @@ add_block <- function(stack, block, position = NULL) {
     # after a plot block. In a later version, we may imagine
     # have multiple block plot per stack so we'll have to revisit
     # this ...
-    if (inherits(last, "plot_block")) {
-      stop("Can't insert a block below a plot block.")
-    }
+     # if (inherits(last, "plot_block")) {
+     #   stop("Can't insert a block below a plot block.")
+     # }
   }
 
   if (is.null(position)) {
