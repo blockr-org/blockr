@@ -402,9 +402,7 @@ new_select_block <- function(data, columns = colnames(data)[1], ...) {
 
   new_block(
     fields = fields,
-    expr = quote(
-      dplyr::select(.(columns))
-    ),
+    expr = quote(dplyr::select(.(columns))),
     ...,
     class = c("select_block", "transform_block")
   )

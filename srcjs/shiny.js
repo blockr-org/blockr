@@ -33,6 +33,14 @@ window.Shiny.addCustomMessageHandler("blockr-add-block", (msg) => {
     handleIcons(stack);
     collapseOtherBlocks(stack, msg.block);
   }, 500);
+
+  $(document).on("shiny:value", (event) => {
+    if (![`${msg.block}-plot`, `${msg.block}-res`].includes(event.name)) return;
+
+    $(`[data-value='${msg.block}-block']`)
+      .find(".block-loading")
+      .addClass("d-none");
+  });
 });
 
 // Block color feedback (validation)
