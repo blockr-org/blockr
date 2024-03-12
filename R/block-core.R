@@ -225,6 +225,10 @@ evaluate_block.transform_block <- function(x, data, ...) {
 
 #' @rdname evaluate_block
 #' @export
+evaluate_block.htmlwidget_block <- evaluate_block.transform_block
+
+#' @rdname evaluate_block
+#' @export
 evaluate_block.plot_block <- function(x, data, ...) {
   stopifnot(...length() == 0L)
   eval(

@@ -413,3 +413,31 @@ create_app_link <- function(app_code, mode = c("app", "editor"), header = TRUE) 
     `data-external` = "1"
   )
 }
+
+
+guess_htmlwidget_renderer <- function(plot) {
+  # we can assume that htmlwidgets' first class is package name
+  # and used by renderer.
+  pkg <- class(plot)[1]
+
+  # renderer is camelCase by default
+  fn <- sprintf("render%s", tools::toTitleCase(pkg))
+
+  renderer <- tryCatch(
+    utils::getFromNamespace(fn, ns = pkg),
+    error = \(e) e
+  )
+
+  if (!inherits(renderer, "error")) {
+    return(renderer)
+  }
+
+  fn <- sprintf("render_%s", pkg)
+
+  renderer <- tryCatch(
+    utils::getFromNamespace(fn, ns = pkg),
+    error = \(e) e
+  )
+
+  renderer
+}

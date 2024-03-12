@@ -2,6 +2,7 @@
 % Please edit documentation in R/ui.R
 \name{uiOutputBlock}
 \alias{uiOutputBlock}
+\alias{uiOutputBlock.htmlwidget_block}
 \alias{uiOutputBlock.block}
 \alias{uiOutputBlock.upload_block}
 \alias{uiOutputBlock.filesbrowser_block}
@@ -9,6 +10,8 @@
 \title{Render block output generic}
 \usage{
 uiOutputBlock(x, ns)
+
+\method{uiOutputBlock}{htmlwidget_block}(x, ns)
 
 \method{uiOutputBlock}{block}(x, ns)
 

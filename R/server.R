@@ -628,6 +628,17 @@ server_output <- function(x, result, output) {
 
 #' @rdname server_output
 #' @export
+server_output.htmlwidget_block <- function(x, result, output) {
+  render_func <- guess_htmlwidget_renderer(result())
+
+  if (!inherits(render_func, "error"))
+    return(do.call(render_func, list(result())))
+
+  NextMethod()
+}
+
+#' @rdname server_output
+#' @export
 server_output.block <- function(x, result, output) {
   DT::renderDT(
     {

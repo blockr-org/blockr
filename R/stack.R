@@ -143,6 +143,10 @@ block_combiner.plot_layer_block <- function(left, right, ...) {
   )
 }
 
+#' @rdname block_combiner
+#' @export
+block_combiner.htmlwidget_layer_block <- block_combiner.transform_block
+
 #' Add block to a stack
 #'
 #' This is to be called oustide the stack by

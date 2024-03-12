@@ -5,6 +5,7 @@
 \alias{block_combiner.transform_block}
 \alias{block_combiner.plot_block}
 \alias{block_combiner.plot_layer_block}
+\alias{block_combiner.htmlwidget_layer_block}
 \title{Combine 2 block expressions}
 \usage{
 block_combiner(left, right, ...)
@@ -14,6 +15,8 @@ block_combiner(left, right, ...)
 \method{block_combiner}{plot_block}(left, right, ...)
 
 \method{block_combiner}{plot_layer_block}(left, right, ...)
+
+\method{block_combiner}{htmlwidget_layer_block}(left, right, ...)
 }
 \arguments{
 \item{left}{Left block object in \code{x \%>\% y}.}

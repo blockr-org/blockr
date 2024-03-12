@@ -808,6 +808,12 @@ uiOutputBlock <- function(x, ns) {
 
 #' @rdname uiOutputBlock
 #' @export
+uiOutputBlock.htmlwidget_block <- function(x, ns) {
+  DT::dataTableOutput(ns("res"))
+}
+
+#' @rdname uiOutputBlock
+#' @export
 uiOutputBlock.block <- function(x, ns) {
   DT::dataTableOutput(ns("res"))
 }

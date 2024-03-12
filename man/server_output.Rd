@@ -2,6 +2,7 @@
 % Please edit documentation in R/server.R
 \name{server_output}
 \alias{server_output}
+\alias{server_output.htmlwidget_block}
 \alias{server_output.block}
 \alias{server_output.upload_block}
 \alias{server_output.filesbrowser_block}
@@ -9,6 +10,8 @@
 \title{Server output generic}
 \usage{
 server_output(x, result, output)
+
+\method{server_output}{htmlwidget_block}(x, result, output)
 
 \method{server_output}{block}(x, result, output)
 
