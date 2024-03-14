@@ -10,9 +10,16 @@ blockr_serialize <- function(x) {
 }
 
 serialize_impl <- function(x) {
+
+  cns <- constructive::construct(
+    x,
+    constructive::opts_environment("new.env"),
+    compare = constructive::compare_options(ignore_function_env = TRUE)
+  )
+
   list(
     class = class(x),
-    payload = x |> dput() |> capture.output() |> paste(collapse = "\n"),
+    payload = paste0(cns[["code"]], collapse = "\n"),
     blockr = as.character(utils::packageVersion("blockr"))
   )
 }
