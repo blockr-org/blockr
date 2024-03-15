@@ -250,6 +250,8 @@ generate_server_block <- function(x, in_dat = NULL, id, display = c("table", "pl
         )
       })
 
+      observe_lock_field(x, blk)
+
       return(
         list(
           block = blk,

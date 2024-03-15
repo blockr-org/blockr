@@ -33,7 +33,7 @@ ui_fields.block <- function(x, ns, inputs_hidden, ...) {
     ui_input,
     x,
     id = chr_ply(names(x), ns),
-    name = get_field_names(x)
+    name = get_field_names(x, ns)
   )
 
   div(
@@ -927,4 +927,28 @@ block_icon.plot_block <- function(x, ...) {
     `data-bs-title` = "Plot block",
     icon("chart-bar")
   )
+}
+
+ui_input_wrapper <- function(x, id, name) {
+  UseMethod("ui_input_wrapper", x)
+}
+
+#' @export
+ui_input_wrapper.default <- function(x, id, name) {
+  # Would be better to have the lockInput within the input label
+  # but even if we render this here all inputs labels are updated
+  # by update_field.
+  div(
+    class = "blockr-input-container position-relative",
+    lockInput(paste0(input_ids(x, id), "Lock"), get_field_always_show(x)),
+    div(
+      class = "blockr-input",
+      ui_input(x, id, name),
+    )
+  )
+}
+
+#' @export
+ui_input_wrapper.hidden_field <- function(x, id, name) {
+  NULL
 }
