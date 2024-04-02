@@ -71,12 +71,15 @@ update_blk <- function(b, value, is_srv, input, data) {
   b
 }
 
-update_ui <- function(b, is_srv, session, l_init) {
+update_ui <- function(b, is_srv, session, l_init, previous_values) {
   for (field in names(b)) {
     if (field %in% names(is_srv)[is_srv]) {
       # update reactive value that tiggers module server update
       l_init[[field]](b[[field]])
     } else {
+      if (length(previous_values) && identical(previous_values[[field]], b[[field]]$value)) {
+        next
+      }
       ui_update(b[[field]], session, field, field)
     }
   }
@@ -149,6 +152,7 @@ generate_server_block <- function(x, in_dat = NULL, id, display = c("table", "pl
         c(values_module, values_default)[names(x)]
       })
 
+      previous_values <- list()
       obs$update_blk <- observe({
         # 1. upd blk,
         b <- update_blk(
@@ -162,7 +166,14 @@ generate_server_block <- function(x, in_dat = NULL, id, display = c("table", "pl
         log_debug("Updating block ", class(x)[[1]])
 
         # 2. Update UI
-        update_ui(b = blk(), is_srv = is_srv, session = session, l_init = l_init)
+        update_ui(
+          b = blk(),
+          is_srv = is_srv,
+          session = session,
+          l_init = l_init,
+          previous_values = previous_values
+        )
+        previous_values <<- as.list(r_values())
         log_debug("Updating UI of block ", class(x)[[1]])
       }) |>
         bindEvent(r_values(), in_dat())
