@@ -91,7 +91,7 @@ upload_block <- function(...) {
 #' @param volumes Paths accessible by the shinyFiles browser.
 #' @export
 #' @rdname filesbrowser_block
-new_filesbrowser_block <- function(volumes = c(home = path.expand("~")), ...) {
+new_filesbrowser_block <- function(volumes = c(root = "/",  home = path.expand("~")), ...) {
   data_path <- function(file) {
     if (length(file) == 0 || is.integer(file) || length(file$files) == 0) {
       return(character())
