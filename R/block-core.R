@@ -209,7 +209,7 @@ evaluate_block <- function(x, ...) {
 #' @export
 evaluate_block.data_block <- function(x, ...) {
   stopifnot(...length() == 0L)
-  eval(generate_code(x), new.env())
+  eval_safe(generate_code(x), new.env())
 }
 
 #' @param data Result from previous block
@@ -217,7 +217,7 @@ evaluate_block.data_block <- function(x, ...) {
 #' @export
 evaluate_block.transform_block <- function(x, data, ...) {
   stopifnot(...length() == 0L)
-  eval(
+  eval_safe(
     substitute(data %>% expr, list(expr = generate_code(x))),
     list(data = data)
   )
@@ -227,7 +227,7 @@ evaluate_block.transform_block <- function(x, data, ...) {
 #' @export
 evaluate_block.plot_block <- function(x, data, ...) {
   stopifnot(...length() == 0L)
-  eval(
+  eval_safe(
     substitute(data %>% expr, list(expr = generate_code(x))),
     list(data = data)
   )
@@ -237,9 +237,18 @@ evaluate_block.plot_block <- function(x, data, ...) {
 #' @export
 evaluate_block.plot_layer_block <- function(x, data, ...) {
   stopifnot(...length() == 0L)
-  eval(
+  eval_safe(
     substitute(data + expr, list(expr = generate_code(x))),
     list(data = data)
+  )
+}
+
+eval_safe <- function(...) {
+  tryCatch(
+    eval(...),
+    error = function(e) {
+      e
+    }
   )
 }
 

@@ -5,7 +5,7 @@
 \alias{filesbrowser_block}
 \title{Files browser block constructor}
 \usage{
-new_filesbrowser_block(volumes = c(home = path.expand("~")), ...)
+new_filesbrowser_block(volumes = c(root = "/", home = path.expand("~")), ...)
 
 filesbrowser_block(...)
 }
