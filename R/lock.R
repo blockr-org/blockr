@@ -80,3 +80,17 @@ init_lock <- function(
     session$sendCustomMessage("lock", list(locked = session$userData$locked()))
   }, ignoreInit = ignore_init)
 }
+
+lockInput <- function(inputId, locked = FALSE) {
+  icon <- icon("eye-slash")
+
+  if (locked)
+    icon <- icon("eye")
+
+  tags$span(
+    id = inputId,
+    class = "lock-input small cursor-pointer text-muted position-absolute end-0",
+    `data-locked` = tolower(locked),
+    icon
+  )
+}
