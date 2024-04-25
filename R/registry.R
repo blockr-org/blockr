@@ -168,23 +168,23 @@ register_blockr_blocks <- function(pkg) {
       mutate_block
     ),
     name = c(
-      "data block",
-      "result block",
-      "upload block",
-      "filesbrowser block",
-      "csv block",
-      "rds block",
-      "json block",
-      "sas block",
-      "xpt block",
-      "filter block",
-      "select block",
-      "summarize block",
-      "arrange block",
-      "group by block",
-      "join block",
-      "head block",
-      "mutate block"
+      "data",
+      "stack",
+      "upload",
+      "file browser",
+      "csv",
+      "rds",
+      "json",
+      "sas",
+      "xpt",
+      "filter",
+      "select",
+      "summarize",
+      "arrange",
+      "group by",
+      "join",
+      "head",
+      "mutate"
     ),
     description = c(
       "Choose a dataset from a package",
@@ -278,4 +278,149 @@ construct_block <- function(block, ...) {
   stopifnot(inherits(block, "block_descr"))
 
   block(...)
+}
+
+#' Add block UI interface
+#'
+#' Useful to allow stack to add blocks to it.
+#' The selected block can be accessed through `input$selected_block`.
+#' Combined to the blocks registry API, this allows to select a block from R
+#' like \code{available_blocks()[[input$selected_block]]}.
+#'
+#' @param x The stack object.
+#' @param ns Stack namespace. Default to \link{identity} so
+#' that it can be used when the stack is the top level element.
+#'
+#' @export
+add_block_ui <- function(x, ns = identity) {
+  if (!getOption("BLOCKR_ADD_BLOCK", TRUE))
+    return()
+
+  add_block_ui_id <- ns("add")
+
+  # either we're on dev mode and we show the add block button
+  # or we have blocks on the stack already and we hide the button
+  # otherwise the stack is empty in which case it is rendered as
+  # expanded and we show the button
+  hidden_class <- ""
+  if (getOption("BLOCKR_DEV", FALSE) || length(x) > 0L)
+    hidden_class <- "d-none"
+
+  tagList(
+    tags$a(
+      icon("plus"),
+      class = sprintf("stack-add-block text-decoration-none %s", hidden_class) |> trimws(),
+      `data-bs-toggle` = "offcanvas",
+      `data-bs-target` = sprintf("#%s", ns("addBlockCanvas")),
+      `aria-controls` = ns("addBlockCanvas")
+    ),
+    off_canvas(
+      id = ns("addBlockCanvas"),
+      title = "Blocks",
+      position = "start",
+      p(
+        "Click on a block to add it to the stack.",
+        class = "text-muted small"
+      ),
+      div(
+        id = ns("blockrRegistry"),
+        class = "blockr-registry",
+        div(
+          class = "input-group mb-2",
+          div(class = "input-group-text", icon("search")),
+          tags$input(
+            id = ns("query"),
+            type = "text",
+            class = "form-control form-control-sm add-block-search",
+            placeholder = "search"
+          )
+        ),
+        div(
+          id = ns("scrollable"),
+          class = "blockr-registry-list",
+          div(
+            id = ns("scrollable-child"),
+            class = "scrollable-child"
+          )
+        ),
+        tags$p(class = "blockr-description w-100 m-0 p-0")
+      )
+    )
+  )
+}
+
+add_block_server <- function(
+  session,
+  registry = available_blocks
+) {
+  if (!getOption("BLOCKR_ADD_BLOCK", TRUE))
+    return()
+
+  observe({
+    registry_path <- session$registerDataObj(
+      rand_names(),
+      list(
+        registry = registry() |> add_block_index() |> sort_registry()
+      ),
+      get_registry
+    )
+
+    hash_path <- session$registerDataObj(
+      rand_names(),
+      list(
+        registry = registry()
+      ),
+      get_registry_hash
+    )
+
+    session$sendCustomMessage(
+      "blockr-registry-endpoints",
+      list(
+        id = session$ns("addBlockCanvas"),
+        ns = session$ns(NULL),
+        registry = registry_path,
+        hash = hash_path,
+        delay = 250
+      )
+    )
+  })
+}
+
+get_registry_hash <- function(data, req) {
+  payload <- list(
+    hash = rlang::hash(data$registry)
+  )
+
+  shiny::httpResponse(
+    200L,
+    content_type = "application/json",
+    content = jsonlite::toJSON(payload, auto_unbox = TRUE)
+  )
+}
+
+get_registry <- function(data, req) {
+  blocks <- data$registry |>
+    lapply(\(x) {
+      list(
+        name = block_name(x),
+        index = get_block_index(x),
+        description = block_descr(x),
+        classes = attr(x, "classes"),
+        icon = block_icon(x) |> as.character()
+      )
+    })
+
+  blocks <- blocks[sapply(blocks, length) > 0] |>
+    unname()
+
+  payload <- list(
+    registry = blocks,
+    hash = rlang::hash(blocks)
+  )
+
+  shiny::httpResponse(
+    200L,
+    content_type = "application/json",
+    content = jsonlite::toJSON(payload, auto_unbox = TRUE, dataframe = "rows", force = TRUE)
+  )
 }
