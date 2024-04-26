@@ -20,12 +20,14 @@ generate_server.result_field <- function(x, ...) {
         inp <- input[["select-stack"]]
 
         if (length(inp) && inp %in% list_workspace_stacks()) {
-          get_stack_result(
+          data <- get_stack_result(
             get_workspace_stack(inp)
           )
-        } else {
-          data.frame()
+          attr(data, "name") <- inp
+          return(data)
         }
+
+        data.frame()
       }
 
       result_hash <- function() {
