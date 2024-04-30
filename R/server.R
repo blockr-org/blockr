@@ -192,18 +192,18 @@ generate_server_block <- function(x, in_dat = NULL, id, display = c("table", "pl
         eventReactive(input$submit, {
           req(is_valid$block)
           if (is.null(in_dat())) {
-            evaluate_block(blk())
+            evaluate_block_safe(blk())
           } else {
-            evaluate_block(blk(), data = in_dat())
+            evaluate_block_safe(blk(), data = in_dat())
           }
         })
       } else {
         reactive({
           req(is_valid$block)
           if (is.null(in_dat()) && !inherits(x, "transform_block")) {
-            evaluate_block(blk())
+            evaluate_block_safe(blk())
           } else {
-            evaluate_block(blk(), data = in_dat())
+            evaluate_block_safe(blk(), data = in_dat())
           }
         })
       }

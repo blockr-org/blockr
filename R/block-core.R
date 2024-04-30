@@ -192,6 +192,13 @@ generate_code.call <- function(x) {
   x
 }
 
+evaluate_block_safe <- function(x, ...){
+  tryCatch(
+    evaluate_block(x, ...),
+    error = function(e) e
+  )
+}
+
 #' Evaluate a block generic
 #'
 #' Calls \link{generate_code} and evaluate it
