@@ -268,11 +268,12 @@ generate_ui.stack <- function(x, id = NULL, ...) {
   ns <- NS(id)
 
   tagList(
-    div(
-      class = "card stack border",
+    bslib::card(
+      class = "stack",
+      full_screen = TRUE,
       id = id,
-      stack_header(x, id, ns),
-      div(
+      bslib::card_header(stack_header(x, id, ns)),
+      bslib::card_body(
         class = "card-body p-1",
         id = sprintf("%s-body", id),
         lapply(seq_along(x), \(i) {
@@ -370,7 +371,6 @@ stack_header.stack <- function(x, title, ns, ...) {
   }
 
   div(
-    class = "card-header",
     div(
       class = "d-flex",
       div(
