@@ -238,6 +238,9 @@ generate_server_block <- function(x, in_dat = NULL, id, display = c("table", "pl
         )
       })
 
+      # this observes the lock input on the fields.
+      observe_lock_field(x, blk)
+
       download(x, session, out_dat)
 
       # For shinytest2
