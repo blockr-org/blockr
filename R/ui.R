@@ -252,51 +252,7 @@ generate_ui.block <- function(x, id, ...,
         block_header(x, ns, inputs_hidden),
         div(class = "block-validation"),
         block_body(x, ns, inputs_hidden),
-        block_code(x, ns, inputs_hidden),
-        download_ui(x, ns, inputs_hidden)
-      )
-    )
-  )
-}
-
-#' Add block UI interface
-#'
-#' Useful to allow stack to add blocks to it.
-#' The selected block can be accessed through `input$selected_block`.
-#' Combined to the blocks registry API, this allows to select a block from R
-#' like \code{available_blocks()[[input$selected_block]]}.
-#'
-#' @param ns Stack namespace. Default to \link{identity} so
-#' that it can be used when the stack is the top level element.
-#'
-#' @export
-add_block_ui <- function(ns = identity) {
-  add_block_ui_id <- ns("add")
-
-  log_debug("Adding \"add block\" UI with ID ", add_block_ui_id)
-
-  tagList(
-    tags$a(
-      icon("plus"),
-      class = "stack-add-block text-decoration-none",
-      `data-bs-toggle` = "offcanvas",
-      `data-bs-target` = sprintf("#%s", ns("addBlockCanvas")),
-      `aria-controls` = ns("addBlockCanvas")
-    ),
-    off_canvas(
-      id = ns("addBlockCanvas"),
-      title = "Blocks",
-      position = "bottom",
-      radioButtons(
-        ns("selected_block"),
-        "Choose a block",
-        choices = names(available_blocks()),
-        inline = TRUE
-      ),
-      actionButton(
-        add_block_ui_id,
-        icon("plus"),
-        `data-bs-dismiss` = "offcanvas"
+        block_code(x, ns, inputs_hidden)
       )
     )
   )
@@ -423,20 +379,23 @@ stack_header.stack <- function(x, title, ns, ...) {
       ),
       div(
         class = "flex-shrink-1",
-        actionLink(
-          ns("remove"),
-          class = "text-decoration-none stack-remove",
-          icon("trash")
-        ),
-        add_block_ui(ns),
-        actionLink(
-          ns("copy"),
-          class = "text-decoration-none stack-copy-code",
-          iconCode()
-        ),
-        tags$a(
-          class = edit_class,
-          icon
+        div(
+          class = "stack-tools",
+          add_block_ui(x, ns),
+          actionLink(
+            ns("remove"),
+            class = "text-decoration-none stack-remove",
+            icon("trash")
+          ),
+          actionLink(
+            ns("copy"),
+            class = "text-decoration-none stack-copy-code",
+            iconCode()
+          ),
+          tags$a(
+            class = edit_class,
+            icon
+          )
         )
       )
     )

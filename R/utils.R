@@ -188,10 +188,11 @@ dropNulls <- function(x) {
 #'
 #' @export
 off_canvas <- function(
-    id,
-    title,
-    ...,
-    position = c("start", "top", "bottom", "end")) {
+  id,
+  title,
+  ...,
+  position = c("start", "top", "bottom", "end")
+) {
   position <- match.arg(position)
   label <- rand_names()
 
@@ -204,7 +205,8 @@ off_canvas <- function(
       class = "offcanvas-header",
       tags$h5(
         class = "offcanvas-title",
-        id = label, title
+        id = label,
+        title
       ),
       tags$button(
         type = "button",
@@ -213,7 +215,7 @@ off_canvas <- function(
         `aria-label` = "Close"
       )
     ),
-    tags$div(class = "offcanvas-body small", ...)
+    tags$div(class = "offcanvas-body", ...)
   )
 }
 
@@ -350,6 +352,40 @@ create_app_link <- function(app_code, mode = c("app", "editor"), header = TRUE) 
     allow = "autoplay",
     `data-external` = "1"
   )
+}
+
+registry_sorter <- function(block) {
+  cl <- attr(block, "classes")
+
+  if ("data_block" %in% cl)
+    return(1)
+
+  if ("parser_block" %in% cl)
+    return(2)
+
+  if ("transform_block" %in% cl)
+    return(3)
+
+  if ("plot_block" %in% cl)
+    return(4)
+
+  return(5)
+}
+
+sort_registry <- function(blocks) {
+  blocks[order(sapply(blocks, registry_sorter), na.last = FALSE)]
+}
+
+add_block_index <- function(blocks) {
+  for (i in seq_along(blocks)) {
+    attr(blocks[[i]], "index") <- i
+  }
+
+  blocks
+}
+
+get_block_index <- function(block) {
+  attr(block, "index")
 }
 
 get_block_title <- function(x) {
