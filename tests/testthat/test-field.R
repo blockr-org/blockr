@@ -309,6 +309,52 @@ test_that("list field", {
   expect_identical(field_value(field), Map(`[`, dat2, c(1L, 0L, 1L, 0L, 1L)))
 })
 
+test_that("expression field", {
+
+  new_mutate_expr_block <- function(data, ...) {
+
+    fields <- list(
+      col_name = new_string_field("new_col"),
+      expression = new_expression_field()
+    )
+
+    new_block(
+      fields = fields,
+      expr = quote(
+        dplyr::mutate(..(expression))
+      ),
+      ...,
+      class = c("mutate_expr_block", "transform_block", "submit_block")
+    )
+  }
+
+  generate_code_mutate_expr <- function(x) {
+
+    if (!is_initialized(x)) {
+      return(quote(identity()))
+    }
+
+    val <- set_names(
+      parse(text = field_value(x[["expression"]])),
+      field_value(x[["col_name"]])
+    )
+
+    do.call(
+      bquote,
+      list(attr(x, "expr"), where = list(expression = val), splice = TRUE)
+    )
+  }
+
+  .S3method("generate_code", "mutate_expr_block", generate_code_mutate_expr)
+
+  stack <- new_stack(
+    new_dataset_block,
+    new_mutate_expr_block
+  )
+
+  expect_s3_class(stack, "stack")
+})
+
 test_that("field name", {
   blk <- new_dataset_block("iris")
   expect_equal(get_field_names(blk), c("package", "Dataset"))
